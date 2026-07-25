@@ -3,157 +3,451 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Personalized Coordination Hub</title>
+  <title>Partner Coordination & Responder Status</title>
   <link rel="icon" href="../../assets/1.HomePage/favicon.ico" type="image/x-icon">
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/1.HomePage/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/1.HomePage/favicon-16x16.png">
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="../components/navbar.css" />
   <style>
-    :root {
-      --primary-color: #ff416c;
-      --bg-color: #f6f9fc;
-    }
-    /* Global Reset */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--bg-color);
+      font-family: 'Poppins', Arial, sans-serif;
+      background: #f4f6fb;
       color: #333;
-      padding: 1rem;
-      text-align: center;
     }
-    header {
-      background: linear-gradient(135deg, var(--primary-color), #ff4b2b);
-      color: #fff;
-      padding: 1.5rem;
-      font-size: 2.5rem;
-      position: relative;
-      text-align: center;
+
+    .main-content {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
     }
-    header .back-btn {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      font-size: 1.8rem;
-      color: #fff;
-      transition: opacity 0.3s ease;
+
+    /* Page Header */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
     }
-    header .back-btn:hover {
-      opacity: 0.8;
+    .page-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1a2340;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .container {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 1rem;
-    }
-    .info {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-    }
-    .org-list {
-      text-align: left;
+    .page-header h1 i { color: #f59e0b; }
+    .updated-badge {
+      font-size: 0.8rem;
+      color: #6b7280;
       background: #fff;
-      padding: 1.5rem;
+      padding: 6px 12px;
+      border-radius: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    /* Partner Grid */
+    .partner-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .partner-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .partner-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .partner-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .partner-icon {
+      width: 44px;
+      height: 44px;
       border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
     }
-    .org-item {
-      padding: 0.8rem 0;
-      border-bottom: 1px solid #eee;
-      font-size: 1.1rem;
-      line-height: 1.5;
+    .icon-gov { background: #eff6ff; color: #2776de; }
+    .icon-ngo { background: #f0fdf4; color: #16a34a; }
+    .icon-private { background: #fff7ed; color: #ea580c; }
+    .icon-community { background: #fdf4ff; color: #9333ea; }
+    .icon-fire { background: #fff1f2; color: #e11d48; }
+    .icon-health { background: #f0fdfa; color: #0d9488; }
+
+    .partner-info { flex: 1; min-width: 0; }
+    .partner-info h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1a2340;
+      margin-bottom: 2px;
     }
-    .org-item:last-child {
-      border-bottom: none;
+    .partner-info p {
+      font-size: 0.82rem;
+      color: #6b7280;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .org-item strong {
-      color: var(--primary-color);
+
+    /* Status Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      flex-shrink: 0;
     }
-    .org-item a {
-      text-decoration: none;
-      color: #4a00e0;
-      margin-right: 1rem;
+    .status-active { background: #dcfce7; color: #16a34a; }
+    .status-standby { background: #fef9c3; color: #ca8a04; }
+    .status-limited { background: #fee2e2; color: #dc2626; }
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: currentColor;
     }
-    .org-item a:hover {
-      text-decoration: underline;
+
+    /* Action Buttons */
+    .partner-actions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
     }
-    .call-link {
-      color: #4a00e0;
+    .btn-call {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 14px;
+      background: #2776de;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
       cursor: pointer;
-      font-weight: bold;
-      text-decoration: underline;
+      text-decoration: none;
+      transition: background 0.2s;
     }
-    footer {
-      margin-top: 2rem;
+    .btn-call:hover { background: #1a5fbf; }
+
+    .btn-visit {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 14px;
+      background: #f3f4f6;
+      color: #374151;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-visit:hover { background: #e5e7eb; }
+
+    /* Last Contact */
+    .last-contact {
+      font-size: 0.78rem;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      border-top: 1px solid #f3f4f6;
+      padding-top: 12px;
+    }
+
+    /* Quick Actions Bar */
+    .quick-actions {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
+    }
+    .quick-actions h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1a2340;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .quick-actions h2 i { color: #2776de; }
+    .quick-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .quick-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: opacity 0.2s;
+      text-align: left;
+    }
+    .quick-btn:hover { opacity: 0.85; }
+    .quick-btn i { font-size: 1rem; flex-shrink: 0; }
+    .btn-dispatch { background: #fee2e2; color: #dc2626; }
+    .btn-update { background: #dbeafe; color: #2776de; }
+    .btn-broadcast { background: #dcfce7; color: #16a34a; }
+    .btn-report { background: #fef9c3; color: #ca8a04; }
+
+    /* Availability Note */
+    .availability-note {
+      background: #eff6ff;
+      border-left: 4px solid #2776de;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 0.85rem;
+      color: #1e40af;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a2340;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 10px;
       font-size: 0.9rem;
-      color: #333;
-      text-align: center;
-      padding: 1rem;
+      display: none;
+      z-index: 9999;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 640px) {
+      .partner-grid { grid-template-columns: 1fr; }
+      .quick-btn-grid { grid-template-columns: 1fr; }
+      .page-header { flex-direction: column; align-items: flex-start; gap: 8px; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <i class="fas fa-arrow-left back-btn" onclick="goBack()"></i>
-    Personalized Coordination Hub
-  </header>
-  <div class="container">
-    <p class="info">
-      Seamlessly collaborate with government agencies, NGOs, and private partners to enhance disaster response.
-    </p>
-    <div class="org-list">
-      <div class="org-item">
-        <strong>Government:</strong> National Disaster Management Authority (NDMA)<br>
-        <a href="https://ndma.gov.in/" target="_blank">Visit Website</a>
-        <span class="call-link" onclick="placeCall('NDMA')">Call: 1800-123-456</span>
+  <div id="sh-navbar-root"></div>
+  <script src="../components/navbar.js" data-sh-navbar data-page-title="Partner Coordination"></script>
+
+  <div class="main-content">
+    <div class="page-header">
+      <h1><i class="fas fa-handshake"></i> Partner Coordination & Responder Status</h1>
+      <span class="updated-badge"><i class="fas fa-circle" style="color:#16a34a; font-size:8px;"></i> Updated Just now</span>
+    </div>
+
+    <!-- Partner Cards Grid -->
+    <div class="partner-grid">
+
+      <!-- Government -->
+      <div class="partner-card">
+        <div class="partner-card-header">
+          <div class="partner-icon icon-gov"><i class="fas fa-landmark"></i></div>
+          <div class="partner-info">
+            <h3>Government</h3>
+            <p>National Disaster Management Authority</p>
+          </div>
+          <span class="status-badge status-active"><span class="status-dot"></span>Active</span>
+        </div>
+        <div class="partner-actions">
+          <button class="btn-call" onclick="placeCall('NDMA', '1800-123-456')">
+            <i class="fas fa-phone"></i> Call: 1800-123-456
+          </button>
+          <a href="https://ndma.gov.in/" target="_blank" class="btn-visit">
+            <i class="fas fa-globe"></i> Visit Website
+          </a>
+        </div>
+        <div class="last-contact"><i class="fas fa-clock"></i> Last contact: 5 min ago</div>
       </div>
-      <div class="org-item">
-        <strong>NGO:</strong> Rapid Response<br>
-        <a href="https://www.rapidresponse.org.in/" target="_blank">Visit Website</a>
-        <span class="call-link" onclick="placeCall('Rapid Response')">Call: 1800-987-654</span>
+
+      <!-- NGOs -->
+      <div class="partner-card">
+        <div class="partner-card-header">
+          <div class="partner-icon icon-ngo"><i class="fas fa-hands-helping"></i></div>
+          <div class="partner-info">
+            <h3>NGOs</h3>
+            <p>Rapid Response</p>
+          </div>
+          <span class="status-badge status-active"><span class="status-dot"></span>Active</span>
+        </div>
+        <div class="partner-actions">
+          <button class="btn-call" onclick="placeCall('Rapid Response', '1800-987-654')">
+            <i class="fas fa-phone"></i> Call: 1800-987-654
+          </button>
+          <a href="https://www.rapidresponse.org.in/" target="_blank" class="btn-visit">
+            <i class="fas fa-globe"></i> Visit Website
+          </a>
+        </div>
+        <div class="last-contact"><i class="fas fa-clock"></i> Last contact: 12 min ago</div>
       </div>
-      <div class="org-item">
-        <strong>Private Sector:</strong> GVK Emergency Management and Research Institute (GVK EMRI)<br>
-        <a href="https://www.emri.in/" target="_blank">Visit Website</a>
-        <span class="call-link" onclick="placeCall('GVK EMRI')">Call: 1800-555-123</span>
+
+      <!-- Private Sector -->
+      <div class="partner-card">
+        <div class="partner-card-header">
+          <div class="partner-icon icon-private"><i class="fas fa-briefcase"></i></div>
+          <div class="partner-info">
+            <h3>Private Sector</h3>
+            <p>GVK Emergency Management</p>
+          </div>
+          <span class="status-badge status-standby"><span class="status-dot"></span>Standby</span>
+        </div>
+        <div class="partner-actions">
+          <button class="btn-call" onclick="placeCall('GVK EMRI', '1800-555-123')">
+            <i class="fas fa-phone"></i> Call: 1800-555-123
+          </button>
+          <a href="https://www.emri.in/" target="_blank" class="btn-visit">
+            <i class="fas fa-globe"></i> Visit Website
+          </a>
+        </div>
+        <div class="last-contact"><i class="fas fa-clock"></i> Last contact: 30 min ago</div>
       </div>
-      <div class="org-item">
-        <strong>Community Group:</strong> All India Disaster Mitigation Institute (AIDMI)<br>
-        <a href="https://aidmi.org/" target="_blank">Visit Website</a>
-        <span class="call-link" onclick="placeCall('AIDMI')">Call: 022-1234-5678</span>
+
+      <!-- Community Groups -->
+      <div class="partner-card">
+        <div class="partner-card-header">
+          <div class="partner-icon icon-community"><i class="fas fa-users"></i></div>
+          <div class="partner-info">
+            <h3>Community Groups</h3>
+            <p>Volunteer Firefighters — AIDMI</p>
+          </div>
+          <span class="status-badge status-active"><span class="status-dot"></span>Active</span>
+        </div>
+        <div class="partner-actions">
+          <button class="btn-call" onclick="placeCall('AIDMI', '022-9876-5432')">
+            <i class="fas fa-phone"></i> Call: 022-9876-5432
+          </button>
+          <a href="https://aidmi.org/" target="_blank" class="btn-visit">
+            <i class="fas fa-globe"></i> Visit Website
+          </a>
+        </div>
+        <div class="last-contact"><i class="fas fa-clock"></i> Last contact: 8 min ago</div>
       </div>
-      <div class="org-item">
-        <strong>Volunteer Firefighters:</strong> The Hans Foundation<br>
-        <a href="https://thehansfoundation.org/" target="_blank">Visit Website</a>
-        <span class="call-link" onclick="placeCall('The Hans Foundation')">Call: 022-9876-5432</span>
+
+      <!-- Volunteer Firefighters -->
+      <div class="partner-card">
+        <div class="partner-card-header">
+          <div class="partner-icon icon-fire"><i class="fas fa-fire-extinguisher"></i></div>
+          <div class="partner-info">
+            <h3>Volunteer Firefighters</h3>
+            <p>The Hans Foundation</p>
+          </div>
+          <span class="status-badge status-limited"><span class="status-dot"></span>Limited</span>
+        </div>
+        <div class="partner-actions">
+          <button class="btn-call" onclick="placeCall('The Hans Foundation', '022-9876-5432')">
+            <i class="fas fa-phone"></i> Call: 022-9876-5432
+          </button>
+          <a href="https://thehansfoundation.org/" target="_blank" class="btn-visit">
+            <i class="fas fa-globe"></i> Visit Website
+          </a>
+        </div>
+        <div class="last-contact"><i class="fas fa-clock"></i> Last contact: 1 hr ago</div>
       </div>
-      <div class="org-item">
-        <strong>Community Health Center:</strong> Urban Health Resource Centre (UHRC)<br>
-        <a href="https://uhrc.in/uhrc/" target="_blank">Visit Website</a>
-        <span class="call-link" onclick="placeCall('UHRC')">Call: 1800-123-000</span>
+
+      <!-- Community Health -->
+      <div class="partner-card">
+        <div class="partner-card-header">
+          <div class="partner-icon icon-health"><i class="fas fa-hospital"></i></div>
+          <div class="partner-info">
+            <h3>Community Health Center</h3>
+            <p>Urban Health Resource Centre</p>
+          </div>
+          <span class="status-badge status-standby"><span class="status-dot"></span>Standby</span>
+        </div>
+        <div class="partner-actions">
+          <button class="btn-call" onclick="placeCall('UHRC', '1800-123-000')">
+            <i class="fas fa-phone"></i> Call: 1800-123-000
+          </button>
+          <a href="https://uhrc.in/uhrc/" target="_blank" class="btn-visit">
+            <i class="fas fa-globe"></i> Visit Website
+          </a>
+        </div>
+        <div class="last-contact"><i class="fas fa-clock"></i> Last contact: 45 min ago</div>
+      </div>
+
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <h2><i class="fas fa-bolt"></i> Direct Actions</h2>
+      <div class="quick-btn-grid">
+        <button class="quick-btn btn-dispatch" onclick="showToast('Dispatch request sent to all active responders!')">
+          <i class="fas fa-truck-fast"></i> Request Dispatch
+        </button>
+        <button class="quick-btn btn-update" onclick="showToast('Quick update sent to all partners!')">
+          <i class="fas fa-paper-plane"></i> Send Quick Update
+        </button>
+        <button class="quick-btn btn-broadcast" onclick="showToast('Emergency broadcast initiated!')">
+          <i class="fas fa-broadcast-tower"></i> Emergency Broadcast
+        </button>
+        <button class="quick-btn btn-report" onclick="showToast('Status report generated!')">
+          <i class="fas fa-file-alt"></i> Generate Status Report
+        </button>
       </div>
     </div>
-    <p class="info" style="margin-top:2rem;">
-      Exchange critical updates and coordinate resource deployment for an effective, unified response.
-    </p>
+
+    <!-- Availability Note -->
+    <div class="availability-note">
+      <i class="fas fa-info-circle" style="font-size:1.1rem; flex-shrink:0;"></i>
+      All partner statuses are updated in real time. Contact partners directly for immediate assistance or use the quick action buttons above.
+    </div>
   </div>
-  <footer>
-    © 2025 AI Emergency Assistant. All rights reserved.
-  </footer>
-  
+
+  <div id="toast"></div>
+
   <script>
-    function goBack() {
-      window.location.href = "DisasterCoordination.html.html";
+    function placeCall(org, number) {
+      showToast('Connecting to ' + org + ' (' + number + ')...');
+      setTimeout(() => { window.location.href = 'tel:' + number.replace(/-/g, ''); }, 1000);
     }
-    
-    function placeCall(org) {
-      alert("Call placed to " + org + ". We will connect you shortly.");
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3500);
     }
+
+    // Live timestamp update
+    function updateTimestamp() {
+      const badge = document.querySelector('.updated-badge');
+      if (badge) badge.innerHTML = '<i class="fas fa-circle" style="color:#16a34a; font-size:8px;"></i> Updated Just now';
+    }
+    setInterval(updateTimestamp, 60000);
   </script>
   <script src="../8.AIAssistant/chatbot.js"></script>
 </body>
