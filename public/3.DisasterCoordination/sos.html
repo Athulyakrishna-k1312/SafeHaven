@@ -3,152 +3,542 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SOS Emergency Reporting</title>
+  <title>SOS + Tactical Response Workflow</title>
   <link rel="icon" href="../../assets/1.HomePage/favicon.ico" type="image/x-icon">
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/1.HomePage/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/1.HomePage/favicon-16x16.png">
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="../components/navbar.css" />
   <style>
-    :root {
-      --primary-color: #ff416c;
-      --secondary-color: #ff4b2b;
-      --bg-color: #f6f9fc;
-    }
-    /* Global Reset */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--bg-color);
+      font-family: 'Poppins', Arial, sans-serif;
+      background: #f4f6fb;
       color: #333;
+    }
+
+    .main-content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    /* ── Emergency Numbers Bar ── */
+    .emergency-numbers {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      margin-bottom: 20px;
+    }
+    .emergency-numbers h2 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .emergency-numbers h2 i { color: #2776de; }
+    .numbers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .num-card {
+      background: #f9fafb;
+      border-radius: 10px;
+      padding: 14px;
       text-align: center;
-      margin: 0;
-      padding: 0;
+      border: 1px solid #e5e7eb;
     }
-    header {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      color: #fff;
-      padding: 1.5rem;
-      font-size: 2.5rem;
-      position: relative;
-    }
-    /* Back button in header */
-    header .back-btn {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      font-size: 1.8rem;
-      color: #fff;
-      transition: opacity 0.3s ease;
-    }
-    header .back-btn:hover {
-      opacity: 0.8;
-    }
-    .container {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 1rem;
-    }
-    .info {
-      font-size: 1.2rem;
-      margin: 1.5rem 0;
-    }
-    .sos-btn {
-      background: var(--secondary-color);
+    .num-card .num-icon { font-size: 1.4rem; margin-bottom: 6px; }
+    .num-card .num-label { font-size: 0.75rem; color: #6b7280; margin-bottom: 4px; }
+    .num-card .num-value { font-size: 1.3rem; font-weight: 800; color: #1a2340; margin-bottom: 10px; }
+    .num-card .num-sub { font-size: 0.72rem; color: #9ca3af; margin-bottom: 10px; }
+    .call-now-btn {
+      width: 100%;
+      padding: 8px;
+      background: #2776de;
       color: #fff;
       border: none;
-      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .call-now-btn:hover { background: #1a5fbf; }
+    .contribute-btn {
+      width: 100%;
+      padding: 8px;
+      background: #f3f4f6;
+      color: #374151;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .contribute-btn:hover { background: #e5e7eb; }
+
+    /* ── SOS Activation Panel ── */
+    .sos-panel {
+      background: #fff;
+      border-radius: 14px;
+      padding: 32px 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .sos-warning {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .sos-warning i { color: #f59e0b; }
+
+    .sos-btn {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      color: #fff;
+      border: none;
+      padding: 20px 48px;
       font-size: 1.2rem;
+      font-weight: 800;
       border-radius: 50px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      letter-spacing: 1px;
+      box-shadow: 0 6px 24px rgba(220,38,38,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      animation: sosGlow 2s infinite;
     }
-    .sos-btn:hover {
-      background: #e63946;
+    @keyframes sosGlow {
+      0%, 100% { box-shadow: 0 6px 24px rgba(220,38,38,0.35); }
+      50% { box-shadow: 0 6px 36px rgba(220,38,38,0.6); }
     }
-    .instructions {
-      margin-top: 2rem;
+    .sos-btn:hover { transform: scale(1.04); }
+    .sos-btn:disabled {
+      background: #9ca3af;
+      box-shadow: none;
+      animation: none;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .call-services-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      background: #f3f4f6;
+      color: #374151;
+      border: none;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .call-services-btn:hover { background: #e5e7eb; }
+
+    /* ── Progress UI (shown after SOS activated) ── */
+    .sos-progress {
+      display: none;
+      margin-top: 24px;
       text-align: left;
-      background: #fff;
-      padding: 1.5rem;
+    }
+    .progress-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #dc2626;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .progress-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .progress-step {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: #f9fafb;
       border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      border: 1px solid #e5e7eb;
+    }
+    .step-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .step-done { background: #dcfce7; color: #16a34a; }
+    .step-active { background: #dbeafe; color: #2776de; }
+    .step-pending { background: #f3f4f6; color: #9ca3af; }
+    .step-text { flex: 1; }
+    .step-text strong { font-size: 0.88rem; color: #1a2340; display: block; }
+    .step-text span { font-size: 0.78rem; color: #6b7280; }
+    .step-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+    .badge-done { background: #dcfce7; color: #16a34a; }
+    .badge-active { background: #dbeafe; color: #2776de; }
+    .badge-pending { background: #f3f4f6; color: #9ca3af; }
+
+    /* Responder ETA */
+    .eta-box {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .eta-icon { font-size: 1.8rem; }
+    .eta-text strong { font-size: 0.95rem; color: #1a2340; display: block; margin-bottom: 4px; }
+    .eta-text span { font-size: 0.82rem; color: #6b7280; }
+
+    /* ── Quick Links ── */
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .quick-link-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      cursor: pointer;
+      transition: transform 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .quick-link-card:hover { transform: translateY(-2px); }
+    .quick-link-card .ql-icon { font-size: 1.4rem; margin-bottom: 8px; }
+    .quick-link-card h3 { font-size: 0.85rem; font-weight: 700; color: #1a2340; margin-bottom: 4px; }
+    .quick-link-card p { font-size: 0.75rem; color: #6b7280; }
+
+    /* ── Checklist ── */
+    .checklist-section {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
       display: none;
     }
-    .instructions h2 {
-      font-size: 1.8rem;
-      color: var(--primary-color);
-      margin-bottom: 1rem;
+    .checklist-section.visible { display: block; }
+    .checklist-section h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1a2340;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .instructions ul {
-      list-style: none;
-      padding-left: 0;
+    .checklist-section h2 i { color: #dc2626; }
+    .checklist-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
     }
-    .instructions ul li {
-      margin-bottom: 0.8rem;
-      font-size: 1.1rem;
-      padding-left: 1.5rem;
-      position: relative;
+    .tab-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: #f3f4f6;
+      color: #374151;
+      transition: all 0.2s;
     }
-    .instructions ul li::before {
-      content: "\f00c"; /* Font Awesome check icon */
-      font-family: "Font Awesome 6 Free";
-      font-weight: 900;
-      position: absolute;
-      left: 0;
-      top: 0;
-      color: var(--primary-color);
+    .tab-btn.active { background: #2776de; color: #fff; }
+    .checklist-items { display: none; }
+    .checklist-items.active { display: block; }
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: 0.85rem;
+      color: #374151;
+      line-height: 1.5;
     }
-    footer {
-      margin-top: 2rem;
+    .checklist-item:last-child { border-bottom: none; }
+    .checklist-item i { color: #16a34a; margin-top: 2px; flex-shrink: 0; }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a2340;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 10px;
       font-size: 0.9rem;
-      color: #333;
-      text-align: center;
-      padding: 1rem;
+      display: none;
+      z-index: 9999;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 640px) {
+      .numbers-grid { grid-template-columns: 1fr; }
+      .quick-links { grid-template-columns: 1fr; }
+      .sos-btn { padding: 16px 32px; font-size: 1rem; }
+    }
+    @media (max-width: 480px) {
+      .numbers-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
-  <header>
-    <i class="fas fa-arrow-left back-btn" onclick="goBack()"></i>
-    SOS Emergency Reporting
-  </header>
-  <div class="container">
-    <p class="info">
-      Report an emergency with a single tap. Your alert is sent immediately to local responders.
-    </p>
-    <!-- Single SOS Button -->
-    <button class="sos-btn" onclick="activateSOS()">Activate SOS</button>
-    <p class="info" style="margin-top:2rem;">
-      Once activated, follow the instructions below for evacuation and first-aid.
-    </p>
-    <div class="instructions" id="instructions">
-      <h2>Evacuation & First-Aid Instructions</h2>
-      <ul>
-        <li>Remain calm and assess your surroundings.</li>
-        <li>Secure your essential belongings if time permits.</li>
-        <li>Follow the designated evacuation route on your device.</li>
-        <li>If injured, administer basic first aid using on-screen guidelines.</li>
-        <li>Stay connected for further instructions from emergency services.</li>
-      </ul>
+  <div id="sh-navbar-root"></div>
+  <script src="../components/navbar.js" data-sh-navbar data-page-title="SOS Response"></script>
+
+  <div class="main-content">
+
+    <!-- Emergency Numbers -->
+    <div class="emergency-numbers">
+      <h2><i class="fas fa-phone-alt"></i> Emergency Numbers (India)</h2>
+      <div class="numbers-grid">
+        <div class="num-card">
+          <div class="num-icon">🚔</div>
+          <div class="num-label">Police & Rescue</div>
+          <div class="num-value">112</div>
+          <div class="num-sub">Call Now</div>
+          <button class="call-now-btn" onclick="callNumber('112', 'Police & Rescue')">
+            <i class="fas fa-phone"></i> Call Now
+          </button>
+        </div>
+        <div class="num-card">
+          <div class="num-icon">🚑</div>
+          <div class="num-label">Ambulance Service</div>
+          <div class="num-value">108</div>
+          <div class="num-sub">Call Now</div>
+          <button class="call-now-btn" onclick="callNumber('108', 'Ambulance')">
+            <i class="fas fa-phone"></i> Call Now
+          </button>
+        </div>
+        <div class="num-card">
+          <div class="num-icon">🚒</div>
+          <div class="num-label">Fire Services</div>
+          <div class="num-value">101</div>
+          <div class="num-sub">Call Now</div>
+          <button class="contribute-btn" onclick="showToast('Opening contribution portal...')">
+            Contribute
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="quick-links">
+      <a class="quick-link-card" href="../2.AlertsRisks/AlertsRisks.html">
+        <div class="ql-icon">⚠️</div>
+        <h3>Alerts & Warnings</h3>
+        <p>See current risks near you</p>
+      </a>
+      <a class="quick-link-card" href="../4.EvacuationSafety/EvacuationSafety.html">
+        <div class="ql-icon">🏃</div>
+        <h3>Safe Evacuation</h3>
+        <p>Find safe routes & shelter</p>
+      </a>
+      <a class="quick-link-card" href="../7.GetEducated/GetEducated.html">
+        <div class="ql-icon">🔍</div>
+        <h3>Get Guidance</h3>
+        <p>What to do during floods?</p>
+      </a>
+    </div>
+
+    <!-- SOS Activation Panel -->
+    <div class="sos-panel">
+      <div class="sos-warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        Use only in life-threatening situations
+      </div>
+
+      <button class="sos-btn" id="sosBtn" onclick="activateSOS()">
+        <i class="fas fa-bell"></i> EMERGENCY SOS
+      </button>
+      <br>
+      <button class="call-services-btn" onclick="callNumber('112', 'Emergency Services')">
+        <i class="fas fa-phone"></i> Call Emergency Services
+      </button>
+
+      <!-- Progress UI — shown after SOS activated -->
+      <div class="sos-progress" id="sosProgress">
+        <div class="progress-title">
+          <i class="fas fa-circle-notch fa-spin"></i> SOS Activated — Response in Progress
+        </div>
+        <div class="progress-steps">
+          <div class="progress-step">
+            <div class="step-icon step-done"><i class="fas fa-check"></i></div>
+            <div class="step-text">
+              <strong>SOS Signal Sent</strong>
+              <span>Your location has been shared with emergency services</span>
+            </div>
+            <span class="step-badge badge-done">Done</span>
+          </div>
+          <div class="progress-step">
+            <div class="step-icon step-done"><i class="fas fa-check"></i></div>
+            <div class="step-text">
+              <strong>Responders Notified</strong>
+              <span>Local fire, police, and medical teams alerted</span>
+            </div>
+            <span class="step-badge badge-done">Done</span>
+          </div>
+          <div class="progress-step">
+            <div class="step-icon step-active"><i class="fas fa-truck"></i></div>
+            <div class="step-text">
+              <strong>Help Dispatched</strong>
+              <span>Rescue team is on the way to your location</span>
+            </div>
+            <span class="step-badge badge-active">Active</span>
+          </div>
+          <div class="progress-step">
+            <div class="step-icon step-pending"><i class="fas fa-house-chimney"></i></div>
+            <div class="step-text">
+              <strong>Safe Zone Identified</strong>
+              <span>Nearest shelter being confirmed</span>
+            </div>
+            <span class="step-badge badge-pending">Pending</span>
+          </div>
+        </div>
+
+        <!-- Responder ETA -->
+        <div class="eta-box">
+          <div class="eta-icon">🚒</div>
+          <div class="eta-text">
+            <strong>Estimated Responder Arrival: 8–12 minutes</strong>
+            <span>Stay at your location if safe. Nearest unit: Fire Station No. 4, Haridwar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Evacuation + First Aid Checklist — revealed after SOS -->
+    <div class="checklist-section" id="checklistSection">
+      <h2><i class="fas fa-clipboard-list"></i> Evacuation & First-Aid Checklist</h2>
+      <div class="checklist-tabs">
+        <button class="tab-btn active" onclick="switchTab('evacuation', this)">🏃 Evacuation</button>
+        <button class="tab-btn" onclick="switchTab('firstaid', this)">🩺 First Aid</button>
+        <button class="tab-btn" onclick="switchTab('supplies', this)">🎒 Supplies</button>
+      </div>
+
+      <div class="checklist-items active" id="tab-evacuation">
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Remain calm and assess your surroundings immediately</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Follow the designated evacuation route shown on your device</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Move upwind and uphill away from flood zones or fire</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Do not use elevators — use stairs only</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Help elderly or disabled people in your vicinity</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Stay connected — keep your phone charged and on</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Proceed to the nearest safe zone as directed</div>
+      </div>
+
+      <div class="checklist-items" id="tab-firstaid">
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> If injured, stop bleeding by applying firm pressure with a cloth</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Do not move someone with a suspected spinal injury</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> For unconscious person — check breathing and perform CPR if needed</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Treat burns with cool (not cold) running water for 10 minutes</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Keep the injured person warm and calm until help arrives</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Do not give food or water to an unconscious person</div>
+      </div>
+
+      <div class="checklist-items" id="tab-supplies">
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Grab your emergency kit — water, food, documents, medication</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Take a fully charged phone and portable power bank</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Wear sturdy shoes and protective clothing</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Carry a flashlight or use your phone torch</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Keep cash in small denominations — ATMs may be unavailable</div>
+        <div class="checklist-item"><i class="fas fa-check-circle"></i> Bring copies of important documents in a waterproof bag</div>
+      </div>
     </div>
   </div>
-  <footer>
-    © 2025 AI Emergency Assistant. All rights reserved.
-  </footer>
-  
+
+  <div id="toast"></div>
+
   <script>
+    let sosActivated = false;
+
     function activateSOS() {
-      alert('Please wait, emergency services have been notified. We will connect you shortly.');
-      document.getElementById('instructions').style.display = 'block';
+      if (sosActivated) return;
+      sosActivated = true;
+
+      const btn = document.getElementById('sosBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-check"></i> SOS ACTIVATED';
+
+      // Show progress UI
+      document.getElementById('sosProgress').style.display = 'block';
+
+      // Reveal checklist
+      document.getElementById('checklistSection').classList.add('visible');
+
+      showToast('🚨 SOS Activated! Emergency services have been notified. Help is on the way.');
+
+      // Simulate step progression
+      setTimeout(() => {
+        const steps = document.querySelectorAll('.progress-step');
+        if (steps[3]) {
+          steps[3].querySelector('.step-icon').className = 'step-icon step-done';
+          steps[3].querySelector('.step-icon').innerHTML = '<i class="fas fa-check"></i>';
+          steps[3].querySelector('.step-badge').className = 'step-badge badge-done';
+          steps[3].querySelector('.step-badge').textContent = 'Done';
+          steps[3].querySelector('.step-text span').textContent = 'Shelter confirmed at Haridwar Community Center';
+        }
+      }, 5000);
     }
-    
-    function goBack() {
-      // Redirect to the AIassistant page (change the URL as needed)
-      window.location.href = "DisasterCoordination.html";
+
+    function callNumber(number, service) {
+      showToast('Connecting to ' + service + ' (' + number + ')...');
+      setTimeout(() => { window.location.href = 'tel:' + number; }, 800);
+    }
+
+    function switchTab(tab, btn) {
+      document.querySelectorAll('.checklist-items').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 4000);
     }
   </script>
   <script src="../8.AIAssistant/chatbot.js"></script>
